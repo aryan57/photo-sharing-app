@@ -1,66 +1,23 @@
-import React, { useRef, useState } from "react"
+import React from "react"
 import { Image, Container, Table } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
-import { Link, useHistory } from "react-router-dom"
 import Header from './Header'
 
 export default function UpdateProfile() {
-    const emailRef = useRef()
-    const passwordRef = useRef()
-    const passwordConfirmRef = useRef()
-    const { currentUser, updatePassword, updateEmail } = useAuth()
-    const [error, setError] = useState("")
-    const [loading, setLoading] = useState(false)
-    const history = useHistory()
 
-    function handleSubmit(e) {
-        e.preventDefault()
-        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-            return setError("Passwords do not match")
-        }
-
-        const promises = []
-        setLoading(true)
-        setError("")
-
-        if (emailRef.current.value !== currentUser.email) {
-            promises.push(updateEmail(emailRef.current.value))
-        }
-        if (passwordRef.current.value) {
-            promises.push(updatePassword(passwordRef.current.value))
-        }
-
-        Promise.all(promises)
-            .then(() => {
-                history.push("/")
-            })
-            .catch((err) => {
-                setError(err.message)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }
-
-    console.log(currentUser);
-
+    const { currentUser } = useAuth()
     return (
         <>
             <Header />
             <Container className="d-flex align-items-center justify-content-center">
-                <div className="w-100" 
-                
-                style={{ maxWidth: "500px",marginTop:50 }}
-                
-                >
-
-
-
-                    <Table striped bordered hover>
+                <div className="w-100" style={{ maxWidth: "500px", marginTop: 50 }}>
+                    <Table striped bordered hover responsive>
                         <thead>
                             <tr align="center">
                                 <th colSpan="2" >
-                                <Image src={currentUser.photoURL} rounded height="200px" width="200px"/>
+                                    <Image src={currentUser.photoURL} rounded
+                                        height="100px" width="100px"
+                                    />
                                 </th>
                             </tr>
                         </thead>
@@ -83,7 +40,7 @@ export default function UpdateProfile() {
                             </tr>
                             <tr>
                                 <th>Photo URL</th>
-                                <td>{currentUser.photoURL != null ? currentUser.photoURL.toString() : "null"}</td>
+                                <td><a href={currentUser.photoURL != null ? currentUser.photoURL.toString() : "null"} >{currentUser.photoURL != null ? currentUser.photoURL.toString() : "null"}</a></td>
                             </tr>
                         </tbody>
                     </Table>
