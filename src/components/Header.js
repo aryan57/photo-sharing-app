@@ -27,7 +27,8 @@ export default function Header() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="/update-profile">Profile</Nav.Link>
+                        <Nav.Link href="/profile">Profile</Nav.Link>
+                        <Nav.Link href="/update-profile">Update Profile</Nav.Link>
                     </Nav>
                     <Button variant="secondary" onClick={handleLogout}>Logout</Button>
                 </Navbar.Collapse>
