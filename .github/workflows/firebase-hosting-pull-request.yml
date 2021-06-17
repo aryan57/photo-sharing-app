@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: build react pages  
+        run: npm ci && npm run build
         env:
           CI: false
           REACT_APP_FIREBASE_API_KEY: '${{ secrets.REACT_APP_FIREBASE_API_KEY }}'
@@ -21,7 +23,6 @@ jobs:
           REACT_APP_FIREBASE_MESSAGING_SENDER_ID: '${{ secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID }}'
           REACT_APP_FIREBASE_APP_ID: '${{ secrets.REACT_APP_FIREBASE_APP_ID }}'
           REACT_APP_MEASUREMENT_ID: '${{ secrets.REACT_APP_MEASUREMENT_ID }}'
-      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
