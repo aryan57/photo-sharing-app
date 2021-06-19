@@ -81,7 +81,7 @@ export default function UpdateProfile() {
       <Header />
 
       <Container className="d-flex align-items-center justify-content-center">
-        <div className="w-100" style={{ maxWidth: "1500px", marginTop: 50 }}>
+        <div className="w-100" style={{ minWidth: "800px", marginTop: 50 }}>
 
 
           <h2 className="text-center mb-4">Update Profile</h2>
