@@ -6,12 +6,17 @@ import Header from './Header'
 
 export default function Administration() {
 
-    const { sendEmailVerification, deleteUser, logout } = useAuth()
+    const {currentUser, sendEmailVerification, deleteUser, logout } = useAuth()
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
 
     async function sendEmailVerificationFunction() {
+
+        if(currentUser.emailVerified==true) {
+            setMessage("You are already verified!")
+            return
+        }
 
         setError("")
         setMessage("")

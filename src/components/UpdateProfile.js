@@ -81,51 +81,74 @@ export default function UpdateProfile() {
       <Header />
 
       <Container className="d-flex align-items-center justify-content-center">
-        <div className="w-100" style={{ minWidth: "800px", marginTop: 50 }}>
+        <div className="w-100" style={{ maxWidth: "500px", marginTop: 50 }}>
 
 
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {message && <Alert variant="success">{message}</Alert>}
-          <Table striped bordered hover responsive >
+          <Table striped bordered hover responsive style={{ marginTop: 10 }}>
             <tbody>
               <tr>
                 <td >{currentUser.email}</td>
+              </tr>
+              <tr>
                 <td>
                   <InputGroup >
                     <FormControl ref={emailRef} placeholder="New Email" />
                   </InputGroup>
                 </td>
+              </tr>
+              <tr>
                 <td>
                   <Button onClick={updateEmail_} disabled={loading} className="w-100">
                     Update Email
                   </Button>
                 </td>
               </tr>
+            </tbody>
+          </Table>
+
+
+          <Table striped bordered hover responsive style={{ marginTop: 10 }}>
+            <tbody>
               <tr>
                 <td>{currentUser.displayName}</td>
+              </tr>
+              <tr>
                 <td>
                   <InputGroup>
                     <FormControl ref={nameRef} placeholder="New Name" />
                   </InputGroup>
                 </td>
+              </tr>
+              <tr>
                 <td>
                   <Button onClick={updateName_} disabled={loading} className="w-100">
                     Update Name
                   </Button>
                 </td>
               </tr>
+            </tbody>
+          </Table>
+
+          <Table striped bordered hover responsive style={{ marginTop: 10 }}>
+            <tbody>
               <tr>
                 <td>
                   <InputGroup>
                     <FormControl ref={passwordRef} placeholder="New Password" />
                   </InputGroup>
                 </td>
+              </tr>
+              <tr>
                 <td>
                   <InputGroup>
                     <FormControl ref={passwordConfirmRef} placeholder="Confirm New Password" />
                   </InputGroup>
                 </td>
+              </tr>
+              <tr>
                 <td>
                   <Button onClick={updatePassword_} disabled={loading} className="w-100">
                     Update Password

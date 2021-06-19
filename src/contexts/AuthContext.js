@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
     return auth.signInWithEmailAndPassword(email, password)
   }
 
-  function googleSignin(email, password) {
+  function googleSignin() {
     return auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
   }
 
