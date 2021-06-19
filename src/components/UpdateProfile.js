@@ -37,8 +37,8 @@ export default function UpdateProfile() {
 
   async function updateEmail_() {
 
-    if (nameRef.current.value == "") {
-      setError('Name can\'t be empty')
+    if (emailRef.current.value == "") {
+      setError('Email can\'t be empty')
       return
     }
 
