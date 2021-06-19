@@ -1,5 +1,6 @@
 import firebase from "firebase/app"
 import "firebase/auth"
+import "firebase/app-check"
 import "firebase/storage"
 
 const app = firebase.initializeApp({
