@@ -11,7 +11,7 @@ export default function UpdateProfile() {
             <Header />
             <Container className="d-flex align-items-center justify-content-center">
                 <div className="w-100" style={{ maxWidth: "500px", marginTop: 50 }}>
-                    <Table striped bordered hover responsive>
+                    <Table striped bordered hover responsive >
                         <thead>
                             <tr align="center">
                                 <th colSpan="2" >
@@ -24,7 +24,7 @@ export default function UpdateProfile() {
                         <tbody>
                             <tr>
                                 <th>Email</th>
-                                <td>{currentUser.email != null ? currentUser.email.toString() : "null"}</td>
+                                <td >{currentUser.email != null ? currentUser.email.toString() : "null"}</td>
                             </tr>
                             <tr>
                                 <th>Name</th>
