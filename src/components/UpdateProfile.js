@@ -106,7 +106,7 @@ export default function UpdateProfile() {
       const uploadTask = uploadFile(firebaseFilepath, file, metaData);
 
       uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
         setUploadProgress(progress);
       });
 

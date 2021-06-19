@@ -13,8 +13,8 @@ const app = firebase.initializeApp({
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 })
 
-// const appCheck = firebase.appCheck();
-// appCheck.activate(process.env.REACT_APP_FIREBASE_APP_CHECK_SITE_KEY);
+const appCheck = firebase.appCheck();
+appCheck.activate(process.env.REACT_APP_FIREBASE_APP_CHECK_SITE_KEY);
 
 export const auth = app.auth()
 export const storage = app.storage()
