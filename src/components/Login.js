@@ -43,7 +43,7 @@ export default function Login() {
   return (
     <>
       <Container className="d-flex align-items-center justify-content-center">
-        <div className="w-100" style={{ maxWidth: "500px", marginTop: 50 }}>
+        <div className="w-100" style={{ maxWidth: "450px", marginTop: 50 }}>
           <Button disabled={loading} className="w-100 text-center mt-2" onClick={!loading ? handleGoogleSignin : null}>
             Sign in With Google
           </Button>

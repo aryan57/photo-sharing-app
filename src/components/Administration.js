@@ -51,7 +51,7 @@ export default function Administration() {
         <>
             <Header />
             <Container className="d-flex align-items-center justify-content-center">
-                <div className="w-100" style={{ maxWidth: "500px", marginTop: 50 }}>
+                <div className="w-100" style={{ maxWidth: "450px", marginTop: 50 }}>
                     {error && <Alert variant="danger">{error}</Alert>}
                     {message && <Alert variant="success">{message}</Alert>}
                     <Button disabled={loading} className="w-100" onClick={sendEmailVerificationFunction}>
