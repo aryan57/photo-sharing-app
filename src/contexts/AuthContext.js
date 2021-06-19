@@ -35,9 +35,21 @@ export function AuthProvider({ children }) {
   function updateEmail(email) {
     return currentUser.updateEmail(email)
   }
+  function updateName(name) {
+    return currentUser.updateProfile({
+      displayName: name
+    })
+  }
 
   function updatePassword(password) {
     return currentUser.updatePassword(password)
+  }
+
+  function sendEmailVerification() {
+    return currentUser.sendEmailVerification()
+  }
+  function deleteUser() {
+    return currentUser.delete()
   }
 
   useEffect(() => {
@@ -57,7 +69,10 @@ export function AuthProvider({ children }) {
     logout,
     resetPassword,
     updateEmail,
-    updatePassword
+    updatePassword,
+    sendEmailVerification,
+    deleteUser,
+    updateName
   }
 
   return (

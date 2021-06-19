@@ -29,6 +29,7 @@ export default function Header() {
                     <Nav className="mr-auto">
                         <Nav.Link href="/profile">Profile</Nav.Link>
                         <Nav.Link href="/update-profile">Update Profile</Nav.Link>
+                        <Nav.Link href="/administration">Administration</Nav.Link>
                     </Nav>
                     <Button variant="secondary" onClick={handleLogout}>Logout</Button>
                 </Navbar.Collapse>

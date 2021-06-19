@@ -1,89 +1,143 @@
 import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
+import { Button, Alert, Container, Table, InputGroup, FormControl } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
-import { Link, useHistory } from "react-router-dom"
 import Header from './Header'
 
 export default function UpdateProfile() {
+
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
-  const { currentUser, updatePassword, updateEmail } = useAuth()
+  const nameRef = useRef()
+  const { currentUser, updateName, updatePassword, updateEmail } = useAuth()
   const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
   const [loading, setLoading] = useState(false)
-  const history = useHistory()
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match")
+  async function updateName_() {
+
+    if (nameRef.current.value == "") {
+      setError('Name can\'t be empty')
+      return
     }
 
-    const promises = []
-    setLoading(true)
     setError("")
+    setMessage("")
+    setLoading(true)
 
-    if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateEmail(emailRef.current.value))
+    try {
+      await updateName(nameRef.current.value)
+      setMessage('Name updated sucessfully')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
-    if (passwordRef.current.value) {
-      promises.push(updatePassword(passwordRef.current.value))
+  }
+
+  async function updateEmail_() {
+
+    if (nameRef.current.value == "") {
+      setError('Name can\'t be empty')
+      return
     }
 
-    Promise.all(promises)
-      .then(() => {
-        history.push("/")
-      })
-      .catch((err) => {
-        setError(err.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    setError("")
+    setMessage("")
+    setLoading(true)
+
+    try {
+      await updateEmail(emailRef.current.value)
+      setMessage('Email updated sucessfully')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+  async function updatePassword_() {
+
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      setError("Passwords do not match")
+      return
+    }
+
+    setError("")
+    setMessage("")
+    setLoading(true)
+
+    try {
+      await updatePassword(passwordRef.current.value)
+      setMessage('Password updated sucessfully')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <>
       <Header />
-      <Card>
-        <Card.Body>
+
+      <Container className="d-flex align-items-center justify-content-center">
+        <div className="w-100" style={{ maxWidth: "1500px", marginTop: 50 }}>
+
+
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                ref={emailRef}
-                required
-                defaultValue={currentUser.email}
-              />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                ref={passwordRef}
-                placeholder="Leave blank to keep the same"
-              />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control
-                type="password"
-                ref={passwordConfirmRef}
-                placeholder="Leave blank to keep the same"
-              />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
-              Update
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        <Link to="/">Cancel</Link>
-      </div>
+          {message && <Alert variant="success">{message}</Alert>}
+          <Table striped bordered hover responsive >
+            <tbody>
+              <tr>
+                <td >{currentUser.email}</td>
+                <td>
+                  <InputGroup >
+                    <FormControl ref={emailRef} placeholder="New Email" />
+                  </InputGroup>
+                </td>
+                <td>
+                  <Button onClick={updateEmail_} disabled={loading} className="w-100">
+                    Update Email
+                  </Button>
+                </td>
+              </tr>
+              <tr>
+                <td>{currentUser.displayName}</td>
+                <td>
+                  <InputGroup>
+                    <FormControl ref={nameRef} placeholder="New Name" />
+                  </InputGroup>
+                </td>
+                <td>
+                  <Button onClick={updateName_} disabled={loading} className="w-100">
+                    Update Name
+                  </Button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <InputGroup>
+                    <FormControl ref={passwordRef} placeholder="New Password" />
+                  </InputGroup>
+                </td>
+                <td>
+                  <InputGroup>
+                    <FormControl ref={passwordConfirmRef} placeholder="Confirm New Password" />
+                  </InputGroup>
+                </td>
+                <td>
+                  <Button onClick={updatePassword_} disabled={loading} className="w-100">
+                    Update Password
+                  </Button>
+                </td>
+              </tr>
+
+            </tbody>
+          </Table>
+
+        </div>
+      </Container>
     </>
   )
 }

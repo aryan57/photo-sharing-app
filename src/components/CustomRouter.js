@@ -8,6 +8,7 @@ import PrivateRoute from "./PrivateRoute"
 import ForgotPassword from "./ForgotPassword"
 import UpdateProfile from "./UpdateProfile"
 import Profile from "./Profile"
+import Administration from "./Administration"
 
 function CustomRouter() {
   return (
@@ -17,6 +18,7 @@ function CustomRouter() {
               <PrivateRoute exact path="/" component={Dashboard} />
               <PrivateRoute path="/update-profile" component={UpdateProfile} />
               <PrivateRoute path="/profile" component={Profile} />
+              <PrivateRoute path="/Administration" component={Administration} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
               <Route path="/forgot-password" component={ForgotPassword} />
