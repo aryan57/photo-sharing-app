@@ -61,6 +61,10 @@ export default function UpdateProfile() {
       setError("Passwords do not match")
       return
     }
+    if (passwordRef.current.value.length < 6) {
+      setError("Password too short. Please give atleast 6 characters.")
+      return
+    }
 
     setError("")
     setMessage("")
