@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react"
-import { auth } from "../firebase"
+import { auth, storage } from "../firebase"
 import firebase from "firebase/app"
 
 const AuthContext = React.createContext()
@@ -52,6 +52,11 @@ export function AuthProvider({ children }) {
     return currentUser.delete()
   }
 
+  function uploadFile(firebaseFilepath, file, metaData) {
+    const storageRef = storage.ref();
+    return storageRef.child(firebaseFilepath).put(file, metaData);
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user)
@@ -72,7 +77,8 @@ export function AuthProvider({ children }) {
     updatePassword,
     sendEmailVerification,
     deleteUser,
-    updateName
+    updateName,
+    uploadFile
   }
 
   return (

@@ -1,5 +1,7 @@
 import firebase from "firebase/app"
 import "firebase/auth"
+import "firebase/storage"
+import '@firebase/app-check';
 
 const app = firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -11,5 +13,9 @@ const app = firebase.initializeApp({
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 })
 
+// const appCheck = firebase.appCheck();
+// appCheck.activate(process.env.REACT_APP_FIREBASE_APP_CHECK_SITE_KEY);
+
 export const auth = app.auth()
+export const storage = app.storage()
 export default app

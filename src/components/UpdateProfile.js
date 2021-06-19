@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react"
-import { Button, Alert, Container, Table, InputGroup, FormControl } from "react-bootstrap"
+import { Button, Alert, Container, Table, InputGroup, ProgressBar, Form, FormControl } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import Header from './Header'
+import firebase from "firebase/app"
 
 export default function UpdateProfile() {
 
@@ -9,10 +10,13 @@ export default function UpdateProfile() {
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
   const nameRef = useRef()
-  const { currentUser, updateName, updatePassword, updateEmail } = useAuth()
+  const { currentUser, updateName, updatePassword, updateEmail, uploadFile } = useAuth()
   const [error, setError] = useState("")
-  const [message, setMessage] = useState("")
+  const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const [file, setFile] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   async function updateName_() {
 
@@ -22,12 +26,12 @@ export default function UpdateProfile() {
     }
 
     setError("")
-    setMessage("")
+    setSuccess("")
     setLoading(true)
 
     try {
       await updateName(nameRef.current.value)
-      setMessage('Name updated sucessfully')
+      setSuccess('Name updated sucessfully')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -43,12 +47,12 @@ export default function UpdateProfile() {
     }
 
     setError("")
-    setMessage("")
+    setSuccess("")
     setLoading(true)
 
     try {
       await updateEmail(emailRef.current.value)
-      setMessage('Email updated sucessfully')
+      setSuccess('Email updated sucessfully')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -67,17 +71,55 @@ export default function UpdateProfile() {
     }
 
     setError("")
-    setMessage("")
+    setSuccess("")
     setLoading(true)
 
     try {
       await updatePassword(passwordRef.current.value)
-      setMessage('Password updated sucessfully')
+      setSuccess('Password updated sucessfully')
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
+  }
+
+  async function uploadProfilePicture_() {
+
+    if (file.size > 5 * 1000000) {
+      setError("Sorry, max upload size is 5 MB")
+      return;
+    }
+
+    setLoading(true)
+    setSuccess("")
+    setError("")
+    setUploadProgress(0);
+
+    const metaData = {
+      contentType: 'image/jpeg'
+    };
+
+    const firebaseFilepath = 'images/' + file.name
+
+    try {
+      const uploadTask = uploadFile(firebaseFilepath, file, metaData);
+
+      uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(progress);
+      });
+
+      await uploadTask;
+
+      setSuccess("Upload Successfull!")
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setUploadProgress(0);
+      setLoading(false)
+    }
+
   }
 
   return (
@@ -90,7 +132,7 @@ export default function UpdateProfile() {
 
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
+          {success && <Alert variant="success">{success}</Alert>}
           <Table striped bordered hover responsive style={{ marginTop: 10 }}>
             <tbody>
               <tr>
@@ -156,6 +198,35 @@ export default function UpdateProfile() {
                 <td>
                   <Button onClick={updatePassword_} disabled={loading} className="w-100">
                     Update Password
+                  </Button>
+                </td>
+              </tr>
+
+            </tbody>
+          </Table>
+          <Table striped bordered hover responsive style={{ marginTop: 10 }}>
+            <tbody>
+              <tr>
+                <td>
+                  <ProgressBar animated now={uploadProgress} label={`${uploadProgress}%`} />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Form>
+                    <Form.File
+                      accept="image/*"
+                      label={file ? file.name : "Choose your new profile picture"}
+                      custom
+                      onChange={(e) => { setFile(e.target.files[0]) }}
+                    />
+                  </Form>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Button disabled={loading} className="w-100" onClick={uploadProfilePicture_}>
+                    Upload Picture
                   </Button>
                 </td>
               </tr>
