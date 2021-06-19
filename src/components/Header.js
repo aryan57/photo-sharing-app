@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import {  Button, Navbar, Nav,Alert } from "react-bootstrap"
+import { Button, Navbar, Nav, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { useHistory } from "react-router-dom"
 
@@ -22,7 +22,7 @@ export default function Header() {
     return (
         <>
             {error && <Alert variant="danger">{error}</Alert>}
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="dark" variant="dark" expand="lg">
                 <Navbar.Brand href="/">Dashboard</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
