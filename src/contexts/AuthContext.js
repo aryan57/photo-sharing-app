@@ -40,6 +40,11 @@ export function AuthProvider({ children }) {
       displayName: name
     })
   }
+  function updatePhotoURL(newURL) {
+    return currentUser.updateProfile({
+      photoURL: newURL
+    })
+  }
 
   function updatePassword(password) {
     return currentUser.updatePassword(password)
@@ -55,6 +60,11 @@ export function AuthProvider({ children }) {
   function uploadFile(firebaseFilepath, file, metaData) {
     const storageRef = storage.ref();
     return storageRef.child(firebaseFilepath).put(file, metaData);
+  }
+
+  function getDownloadURL(firebaseFilepath) {
+    const storageRef = storage.ref();
+    return storageRef.child(firebaseFilepath).getDownloadURL()
   }
 
   useEffect(() => {
@@ -78,7 +88,9 @@ export function AuthProvider({ children }) {
     sendEmailVerification,
     deleteUser,
     updateName,
-    uploadFile
+    uploadFile,
+    getDownloadURL,
+    updatePhotoURL
   }
 
   return (

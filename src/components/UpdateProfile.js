@@ -10,7 +10,7 @@ export default function UpdateProfile() {
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
   const nameRef = useRef()
-  const { currentUser, updateName, updatePassword, updateEmail, uploadFile } = useAuth()
+  const { currentUser, updateName, updatePassword, updateEmail, uploadFile,getDownloadURL,updatePhotoURL } = useAuth()
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
@@ -100,7 +100,7 @@ export default function UpdateProfile() {
       contentType: 'image/jpeg'
     };
 
-    const firebaseFilepath = 'images/' + file.name
+    const firebaseFilepath = 'profilePictures/' + currentUser.uid
 
     try {
       const uploadTask = uploadFile(firebaseFilepath, file, metaData);
@@ -111,8 +111,13 @@ export default function UpdateProfile() {
       });
 
       await uploadTask;
-
       setSuccess("Upload Successfull!")
+      
+      const newURL = await getDownloadURL(firebaseFilepath)
+      console.log(newURL)
+      await updatePhotoURL_(newURL)
+      setSuccess("Photo URL updated successfully!")
+
     } catch (err) {
       setError(err.message)
     } finally {
@@ -120,6 +125,17 @@ export default function UpdateProfile() {
       setLoading(false)
     }
 
+  }
+
+  async function updatePhotoURL_(newURL) {
+
+
+    try {
+      await updatePhotoURL(newURL)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+    }
   }
 
   return (

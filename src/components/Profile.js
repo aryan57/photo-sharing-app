@@ -16,7 +16,7 @@ export default function UpdateProfile() {
                             <tr align="center">
                                 <th >
                                     <Image src={currentUser.photoURL} rounded
-                                        height="100px" width="100px"
+                                        height="200px" width="200px" alt="We can't find your profile picture. Kindly re-upload it."
                                     />
                                 </th>
                             </tr>
@@ -46,12 +46,15 @@ export default function UpdateProfile() {
                             <tr>
                                 <td>{currentUser.uid != null ? currentUser.uid.toString() : "null"}</td>
                             </tr>
+
                             <tr>
                                 <th>Photo URL</th>
                             </tr>
                             <tr>
-                                <td><a href={currentUser.photoURL != null ? currentUser.photoURL.toString() : "null"} >{currentUser.photoURL != null ? currentUser.photoURL.toString() : "null"}</a></td>
+                                <td><a href={currentUser.photoURL != null ? currentUser.photoURL.toString() : "null"} >Click Me</a></td>
                             </tr>
+
+
                         </tbody>
                     </Table>
                 </div>
