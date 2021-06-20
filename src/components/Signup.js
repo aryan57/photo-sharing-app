@@ -27,10 +27,10 @@ export default function Signup() {
     } catch (err) {
       setError(err.message)
     }
-
+    
     setLoading(false)
   }
-
+  
   async function handleGoogleSignin(e) {
     e.preventDefault()
 

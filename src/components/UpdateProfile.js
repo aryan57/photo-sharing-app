@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState,useEffect } from "react"
 import { Button, Alert, Container, Table, InputGroup, ProgressBar, Form, FormControl } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import Header from './Header'
@@ -7,12 +7,25 @@ import firebase from "firebase/app"
 export default function UpdateProfile() {
 
   const emailRef = useRef()
+  const bioRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
   const nameRef = useRef()
-  const { currentUser, updateName, updatePassword, updateEmail, uploadFile,getDownloadURL,updatePhotoURL } = useAuth()
+
+  const { currentUser,
+          updateName,
+          updatePassword,
+          updateEmail,
+          uploadFile,
+          getDownloadURL,
+          updatePhotoURL,
+          updateBio,
+          getUserDocReference
+        } = useAuth()
+
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
+  const [bio, setBio] = useState("")
   const [loading, setLoading] = useState(false)
 
   const [file, setFile] = useState('');
@@ -20,7 +33,7 @@ export default function UpdateProfile() {
 
   async function updateName_() {
 
-    if (nameRef.current.value == "") {
+    if (nameRef.current.value === "") {
       setError('Name can\'t be empty')
       return
     }
@@ -37,11 +50,39 @@ export default function UpdateProfile() {
     } finally {
       setLoading(false)
     }
+
+  }
+  async function updateBio_() {
+
+    setError("")
+    setSuccess("")
+    setLoading(true)
+
+    try {
+      await updateBio(bioRef.current.value)
+      await setBio_()
+      setSuccess('Bio updated sucessfully')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+
+  }
+  async function setBio_() {
+    try {
+      const docRef = await getUserDocReference(currentUser.uid)
+      setBio(docRef.data().bio)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+
+    }
   }
 
   async function updateEmail_() {
 
-    if (emailRef.current.value == "") {
+    if (emailRef.current.value === "") {
       setError('Email can\'t be empty')
       return
     }
@@ -94,7 +135,7 @@ export default function UpdateProfile() {
 
     const ind = file.type.lastIndexOf('/')
 
-    if(ind==-1) {
+    if(ind<0) {
       setError("Please select a valid image")
       return
     }
@@ -146,14 +187,22 @@ export default function UpdateProfile() {
 
   async function updatePhotoURL_(newURL) {
 
-
     try {
       await updatePhotoURL(newURL)
-    } catch (err) {
+    } catch (err) { 
       setError(err.message)
     } finally {
     }
   }
+
+  useEffect(() => {
+    let ignore = false;
+    
+    if (!ignore) {
+      setBio_();
+    }
+    return () => { ignore = true; }
+    },[]);
 
   return (
     <>
@@ -166,6 +215,29 @@ export default function UpdateProfile() {
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
+
+          <Table striped bordered hover responsive style={{ marginTop: 10 }}>
+            <tbody>
+              <tr>
+                <td >{bio}</td>
+              </tr>
+              <tr>
+                <td>
+                  <InputGroup >
+                    <FormControl ref={bioRef} placeholder="New Bio" />
+                  </InputGroup>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Button onClick={updateBio_} disabled={loading} className="w-100">
+                    Update Bio
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+
           <Table striped bordered hover responsive style={{ marginTop: 10 }}>
             <tbody>
               <tr>
@@ -237,6 +309,7 @@ export default function UpdateProfile() {
 
             </tbody>
           </Table>
+
           <Table striped bordered hover responsive style={{ marginTop: 10 }}>
             <tbody>
               <tr>

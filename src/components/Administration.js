@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, Navbar, Nav, Alert, Container } from "react-bootstrap"
+import { Button, Alert, Container } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import Header from './Header'
 
@@ -13,7 +13,7 @@ export default function Administration() {
 
     async function sendEmailVerificationFunction() {
 
-        if(currentUser.emailVerified==true) {
+        if(currentUser.emailVerified) {
             setMessage("You are already verified!")
             return
         }

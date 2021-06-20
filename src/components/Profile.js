@@ -1,16 +1,40 @@
-import React from "react"
-import { Image, Container, Table } from "react-bootstrap"
+import React, { useState, useEffect } from "react"
+import { Image, Container, Table,Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import Header from './Header'
 
 export default function UpdateProfile() {
+    
+    const [bio, setBio] = useState("")
+    const [error, setError] = useState("")
+    const { currentUser,getUserDocReference } = useAuth()
 
-    const { currentUser } = useAuth()
+    async function setBio_() {
+        try {
+            const docRef = await getUserDocReference(currentUser.uid)
+            setBio(docRef.data().bio)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+
+        }
+    }
+
+    useEffect(() => {
+        let ignore = false;
+
+        if (!ignore) {
+            setBio_();
+        }
+        return () => { ignore = true; }
+    }, []);
+
     return (
         <>
             <Header />
             <Container className="d-flex align-items-center justify-content-center">
                 <div className="w-100" style={{ maxWidth: "450px", marginTop: 50 }}>
+                {error && <Alert variant="danger">{error}</Alert>}
                     <Table striped bordered hover responsive >
                         <thead>
                             <tr align="center">
@@ -23,16 +47,22 @@ export default function UpdateProfile() {
                         </thead>
                         <tbody>
                             <tr>
-                                <th>Email</th>
-                            </tr>
-                            <tr>
-                                <td >{currentUser.email != null ? currentUser.email.toString() : "null"}</td>
-                            </tr>
-                            <tr>
                                 <th>Name</th>
                             </tr>
                             <tr>
                                 <td>{currentUser.displayName != null ? currentUser.displayName.toString() : "null"}</td>
+                            </tr>
+                            <tr>
+                                <th>Bio</th>
+                            </tr>
+                            <tr>
+                                <td>{bio}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                            </tr>
+                            <tr>
+                                <td >{currentUser.email != null ? currentUser.email.toString() : "null"}</td>
                             </tr>
                             <tr>
                                 <th>Email Verified</th>

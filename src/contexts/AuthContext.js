@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react"
-import { auth, storage } from "../firebase"
+import { auth, storage,db } from "../firebase"
 import firebase from "firebase/app"
 
 const AuthContext = React.createContext()
@@ -35,11 +35,23 @@ export function AuthProvider({ children }) {
   function updateEmail(email) {
     return currentUser.updateEmail(email)
   }
-  function updateName(name) {
+
+  function updateName(name_) {
     return currentUser.updateProfile({
-      displayName: name
+      displayName: name_
     })
   }
+
+  function updateBio(bio_) {
+    return db.collection("basicData").doc(currentUser.uid).set({
+      bio: bio_
+    }, {merge:true})
+  }
+
+  function getUserDocReference(uid) {
+    return db.collection("basicData").doc(uid).get()
+  }
+
   function updatePhotoURL(newURL) {
     return currentUser.updateProfile({
       photoURL: newURL
@@ -67,6 +79,12 @@ export function AuthProvider({ children }) {
     return storageRef.child(firebaseFilepath).getDownloadURL()
   }
 
+  // function addDataToDB(collection_,doc_,jsonData){
+  //   return db.collection(collection_).doc(doc_).update({
+  //     jsonData
+  //   })
+  // }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user)
@@ -90,7 +108,10 @@ export function AuthProvider({ children }) {
     updateName,
     uploadFile,
     getDownloadURL,
-    updatePhotoURL
+    updatePhotoURL,
+    updateBio,
+    getUserDocReference
+    // addDataToDB
   }
 
   return (
