@@ -86,6 +86,21 @@ export default function UpdateProfile() {
 
   async function uploadProfilePicture_() {
 
+    
+    if(!file) {
+      setError("Please select a valid image")
+      return
+    }
+
+    const ind = file.type.lastIndexOf('/')
+
+    if(ind==-1) {
+      setError("Please select a valid image")
+      return
+    }
+
+    const fileExtension = file.type.substring(ind+1)
+
     if (file.size > 5 * 1000000) {
       setError("Sorry, max upload size is 5 MB")
       return;
@@ -97,10 +112,13 @@ export default function UpdateProfile() {
     setUploadProgress(0);
 
     const metaData = {
-      contentType: 'image/jpeg'
+      contentType: file.type,
+      customMetadata: {
+        'originalFileName': file.name,
+      }
     };
 
-    const firebaseFilepath = 'profilePictures/' + currentUser.uid
+    const firebaseFilepath = 'profilePictures/' + currentUser.uid + '.' + fileExtension
 
     try {
       const uploadTask = uploadFile(firebaseFilepath, file, metaData);
@@ -114,7 +132,6 @@ export default function UpdateProfile() {
       setSuccess("Upload Successfull!")
       
       const newURL = await getDownloadURL(firebaseFilepath)
-      console.log(newURL)
       await updatePhotoURL_(newURL)
       setSuccess("Photo URL updated successfully!")
 
