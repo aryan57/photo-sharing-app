@@ -8,6 +8,7 @@ export default function UpdateProfile() {
 
   const emailRef = useRef()
   const bioRef = useRef()
+  const websiteRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
   const nameRef = useRef()
@@ -20,12 +21,14 @@ export default function UpdateProfile() {
           getDownloadURL,
           updatePhotoURL,
           updateBio,
+          updateWebsite,
           getUserDocReference
         } = useAuth()
 
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [bio, setBio] = useState("")
+  const [website, setWebsite] = useState("")
   const [loading, setLoading] = useState(false)
 
   const [file, setFile] = useState('');
@@ -74,7 +77,40 @@ export default function UpdateProfile() {
       const docRef = await getUserDocReference(currentUser.uid)
       setBio(docRef.data().bio)
     } catch (err) {
+      console.log(err.message)
+    } finally {
+
+    }
+  }
+  async function updateWebsite_() {
+
+    let newWebsite=websiteRef.current.value;
+    if(newWebsite!="" && !newWebsite.startsWith('http://') && !newWebsite.startsWith('https://')) {
+      newWebsite="https://"+newWebsite;
+    }
+
+    setError("")
+    setSuccess("")
+    setLoading(true)
+
+    try {
+      await updateWebsite(newWebsite)
+      await setWebsite_()
+      setSuccess('Website updated sucessfully')
+    } catch (err) {
       setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+
+  }
+
+  async function setWebsite_() {
+    try {
+      const docRef = await getUserDocReference(currentUser.uid)
+      setWebsite(docRef.data().website)
+    } catch (err) {
+      console.log(err.message)
     } finally {
 
     }
@@ -200,6 +236,7 @@ export default function UpdateProfile() {
     
     if (!ignore) {
       setBio_();
+      setWebsite_();
     }
     return () => { ignore = true; }
     },[]);
@@ -232,6 +269,27 @@ export default function UpdateProfile() {
                 <td>
                   <Button onClick={updateBio_} disabled={loading} className="w-100">
                     Update Bio
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+          <Table striped bordered hover responsive style={{ marginTop: 10 }}>
+            <tbody>
+              <tr>
+                <td >{website}</td>
+              </tr>
+              <tr>
+                <td>
+                  <InputGroup >
+                    <FormControl ref={websiteRef} placeholder="New Website" />
+                  </InputGroup>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Button onClick={updateWebsite_} disabled={loading} className="w-100">
+                    Update Website
                   </Button>
                 </td>
               </tr>

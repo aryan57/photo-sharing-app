@@ -47,6 +47,11 @@ export function AuthProvider({ children }) {
       bio: bio_
     }, {merge:true})
   }
+  function updateWebsite(website_) {
+    return db.collection("basicData").doc(currentUser.uid).set({
+      website: website_
+    }, {merge:true})
+  }
 
   function getUserDocReference(uid) {
     return db.collection("basicData").doc(uid).get()
@@ -79,12 +84,6 @@ export function AuthProvider({ children }) {
     return storageRef.child(firebaseFilepath).getDownloadURL()
   }
 
-  // function addDataToDB(collection_,doc_,jsonData){
-  //   return db.collection(collection_).doc(doc_).update({
-  //     jsonData
-  //   })
-  // }
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user)
@@ -110,8 +109,8 @@ export function AuthProvider({ children }) {
     getDownloadURL,
     updatePhotoURL,
     updateBio,
+    updateWebsite,
     getUserDocReference
-    // addDataToDB
   }
 
   return (

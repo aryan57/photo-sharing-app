@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
-import { Image, Container, Table,Alert } from "react-bootstrap"
+import { Image, Container, Table } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import Header from './Header'
 
 export default function UpdateProfile() {
     
     const [bio, setBio] = useState("")
-    const [error, setError] = useState("")
+    const [website, setWebsite] = useState("")
     const { currentUser,getUserDocReference } = useAuth()
 
     async function setBio_() {
@@ -14,17 +14,28 @@ export default function UpdateProfile() {
             const docRef = await getUserDocReference(currentUser.uid)
             setBio(docRef.data().bio)
         } catch (err) {
-            setError(err.message)
+            console.log(err.message);
         } finally {
 
         }
     }
+    async function setWebsite_() {
+        try {
+          const docRef = await getUserDocReference(currentUser.uid)
+          setWebsite(docRef.data().website)
+        } catch (err) {
+          console.log(err.message)
+        } finally {
+    
+        }
+      }
 
     useEffect(() => {
         let ignore = false;
 
         if (!ignore) {
             setBio_();
+            setWebsite_();
         }
         return () => { ignore = true; }
     }, []);
@@ -34,7 +45,6 @@ export default function UpdateProfile() {
             <Header />
             <Container className="d-flex align-items-center justify-content-center">
                 <div className="w-100" style={{ maxWidth: "450px", marginTop: 50 }}>
-                {error && <Alert variant="danger">{error}</Alert>}
                     <Table striped bordered hover responsive >
                         <thead>
                             <tr align="center">
@@ -57,6 +67,12 @@ export default function UpdateProfile() {
                             </tr>
                             <tr>
                                 <td>{bio}</td>
+                            </tr>
+                            <tr>
+                                <th>Website</th>
+                            </tr>
+                            <tr>
+                                <td><a href={website}>{website}</a></td>
                             </tr>
                             <tr>
                                 <th>Email</th>
