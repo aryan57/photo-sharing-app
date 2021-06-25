@@ -27,6 +27,7 @@ export default function Header() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
+                        <Nav.Link href="/grid">Grid</Nav.Link>
                         <Nav.Link href="/profile">Profile</Nav.Link>
                         <Nav.Link href="/update-profile">Update Profile</Nav.Link>
                         <Nav.Link href="/administration">Administration</Nav.Link>

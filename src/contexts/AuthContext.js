@@ -43,18 +43,21 @@ export function AuthProvider({ children }) {
   }
 
   function updateBio(bio_) {
-    return db.collection("basicData").doc(currentUser.uid).set({
+    return db.collection("userData").doc(currentUser.uid).set({
       bio: bio_
     }, {merge:true})
   }
   function updateWebsite(website_) {
-    return db.collection("basicData").doc(currentUser.uid).set({
+    return db.collection("userData").doc(currentUser.uid).set({
       website: website_
     }, {merge:true})
   }
 
   function getUserDocReference(uid) {
-    return db.collection("basicData").doc(uid).get()
+    return db.collection("userData").doc(uid).get()
+  }
+  function getUserPostDocReference(uid) {
+    return db.collection("userData").doc(uid).collection("posts").doc().get()
   }
 
   function updatePhotoURL(newURL) {
@@ -84,6 +87,12 @@ export function AuthProvider({ children }) {
     return storageRef.child(firebaseFilepath).getDownloadURL()
   }
 
+  function updatePostData(uid,docRef,postData) {
+
+    // return docRef.set({postData}, {merge:true})
+    return db.collection("userData").doc(uid).collection("posts").doc(docRef.id).set({postData}, {merge:true})
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user)
@@ -110,7 +119,9 @@ export function AuthProvider({ children }) {
     updatePhotoURL,
     updateBio,
     updateWebsite,
-    getUserDocReference
+    getUserDocReference,
+    getUserPostDocReference,
+    updatePostData
   }
 
   return (

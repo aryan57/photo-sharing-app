@@ -1,4 +1,4 @@
-import React, { useRef, useState,useEffect } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { Button, Alert, Container, Table, InputGroup, ProgressBar, Form, FormControl } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import Header from '../Widgets/Header'
@@ -14,16 +14,16 @@ export default function UpdateProfile() {
   const nameRef = useRef()
 
   const { currentUser,
-          updateName,
-          updatePassword,
-          updateEmail,
-          uploadFile,
-          getDownloadURL,
-          updatePhotoURL,
-          updateBio,
-          updateWebsite,
-          getUserDocReference
-        } = useAuth()
+    updateName,
+    updatePassword,
+    updateEmail,
+    uploadFile,
+    getDownloadURL,
+    updatePhotoURL,
+    updateBio,
+    updateWebsite,
+    getUserDocReference
+  } = useAuth()
 
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
@@ -84,9 +84,9 @@ export default function UpdateProfile() {
   }
   async function updateWebsite_() {
 
-    let newWebsite=websiteRef.current.value;
-    if(newWebsite!=="" && !newWebsite.startsWith('http://') && !newWebsite.startsWith('https://')) {
-      newWebsite="https://"+newWebsite;
+    let newWebsite = websiteRef.current.value;
+    if (newWebsite !== "" && !newWebsite.startsWith('http://') && !newWebsite.startsWith('https://')) {
+      newWebsite = "https://" + newWebsite;
     }
 
     setError("")
@@ -163,21 +163,11 @@ export default function UpdateProfile() {
 
   async function uploadProfilePicture_() {
 
-    
-    if(!file) {
+
+    if (!file || file.type.lastIndexOf('/') < 0) {
       setError("Please select a valid image")
       return
     }
-
-    const ind = file.type.lastIndexOf('/')
-
-    if(ind<0) {
-      setError("Please select a valid image")
-      return
-    }
-
-    const fileExtension = file.type.substring(ind+1)
-
     if (file.size > 5 * 1000000) {
       setError("Sorry, max upload size is 5 MB")
       return;
@@ -188,16 +178,18 @@ export default function UpdateProfile() {
     setError("")
     setUploadProgress(0);
 
-    const metaData = {
-      contentType: file.type,
-      customMetadata: {
-        'originalFileName': file.name,
-      }
-    };
-
-    const firebaseFilepath = 'profilePictures/' + currentUser.uid + '.' + fileExtension
 
     try {
+
+      const metaData = {
+        contentType: file.type,
+        customMetadata: {
+          'originalFileName': file.name,
+        }
+      };
+
+      const fileExtension = file.type.substring(file.type.lastIndexOf('/') + 1)
+      const firebaseFilepath = 'profilePictures/' + currentUser.uid + '.' + fileExtension
       const uploadTask = uploadFile(firebaseFilepath, file, metaData);
 
       uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
@@ -207,11 +199,9 @@ export default function UpdateProfile() {
 
       await uploadTask;
       setSuccess("Upload Successfull!")
-      
+
       const newURL = await getDownloadURL(firebaseFilepath)
       await updatePhotoURL_(newURL)
-      setSuccess("Photo URL updated successfully!")
-
     } catch (err) {
       setError(err.message)
     } finally {
@@ -225,7 +215,8 @@ export default function UpdateProfile() {
 
     try {
       await updatePhotoURL(newURL)
-    } catch (err) { 
+      setSuccess("Photo URL updated successfully!")
+    } catch (err) {
       setError(err.message)
     } finally {
     }
@@ -233,13 +224,13 @@ export default function UpdateProfile() {
 
   useEffect(() => {
     let ignore = false;
-    
+
     if (!ignore) {
       setBio_();
       setWebsite_();
     }
     return () => { ignore = true; }
-    },[]);
+  }, []);
 
   return (
     <>

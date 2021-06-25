@@ -9,6 +9,7 @@ import ForgotPassword from "../Authentication/ForgotPassword"
 import UpdateProfile from "../Profile/UpdateProfile"
 import Profile from "../Profile/Profile"
 import Administration from "../Authentication/Administration"
+import Grid from "../Pages/Grid"
 
 function CustomRouter() {
   return (
@@ -18,6 +19,7 @@ function CustomRouter() {
               <PrivateRoute exact path="/" component={Dashboard} />
               <PrivateRoute path="/update-profile" component={UpdateProfile} />
               <PrivateRoute path="/profile" component={Profile} />
+              <PrivateRoute path="/grid" component={Grid} />
               <PrivateRoute path="/Administration" component={Administration} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
