@@ -1,14 +1,14 @@
 import React from "react"
-import Signup from "./Signup"
-import { AuthProvider } from "../contexts/AuthContext"
+import Signup from "../Authentication/Signup"
+import { AuthProvider } from "../../contexts/AuthContext"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import Dashboard from "./Dashboard"
-import Login from "./Login"
+import Dashboard from "../Pages/Dashboard"
+import Login from "../Authentication/Login"
 import PrivateRoute from "./PrivateRoute"
-import ForgotPassword from "./ForgotPassword"
-import UpdateProfile from "./UpdateProfile"
-import Profile from "./Profile"
-import Administration from "./Administration"
+import ForgotPassword from "../Authentication/ForgotPassword"
+import UpdateProfile from "../Profile/UpdateProfile"
+import Profile from "../Profile/Profile"
+import Administration from "../Authentication/Administration"
 
 function CustomRouter() {
   return (

@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import CustomRouter from "./components/CustomRouter"
+import CustomRouter from "./components/Utilities/CustomRouter"
 import "bootstrap/dist/css/bootstrap.min.css"
 
 ReactDOM.render(
