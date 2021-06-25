@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Image, Container, Table } from "react-bootstrap"
-import { useAuth } from "../../contexts/AuthContext"
+import { useAuth } from "../contexts/AuthContext"
 import Header from '../Widgets/Header'
 
 export default function UpdateProfile() {

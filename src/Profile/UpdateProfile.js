@@ -1,6 +1,6 @@
 import React, { useRef, useState,useEffect } from "react"
 import { Button, Alert, Container, Table, InputGroup, ProgressBar, Form, FormControl } from "react-bootstrap"
-import { useAuth } from "../../contexts/AuthContext"
+import { useAuth } from "../contexts/AuthContext"
 import Header from '../Widgets/Header'
 import firebase from "firebase/app"
 
@@ -85,7 +85,7 @@ export default function UpdateProfile() {
   async function updateWebsite_() {
 
     let newWebsite=websiteRef.current.value;
-    if(newWebsite!="" && !newWebsite.startsWith('http://') && !newWebsite.startsWith('https://')) {
+    if(newWebsite!=="" && !newWebsite.startsWith('http://') && !newWebsite.startsWith('https://')) {
       newWebsite="https://"+newWebsite;
     }
 

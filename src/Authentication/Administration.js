@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Button, Alert, Container } from "react-bootstrap"
-import { useAuth } from "../../contexts/AuthContext"
+import { useAuth } from "../contexts/AuthContext"
 import Header from '../Widgets/Header'
 
 
