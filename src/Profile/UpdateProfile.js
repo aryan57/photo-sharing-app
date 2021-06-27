@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from "react"
 import { Button, Alert, Container, Table, InputGroup, ProgressBar, Form, FormControl } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
 import Header from '../Widgets/Header'
+import resizeImage from "../Utilities/ResizeImage";
+
+import { useAuth } from "../contexts/AuthContext"
 import firebase from "firebase/app"
 
 export default function UpdateProfile() {
@@ -163,13 +165,13 @@ export default function UpdateProfile() {
 
   async function uploadProfilePicture_() {
 
-
     if (!file || file.type.lastIndexOf('/') < 0) {
       setError("Please select a valid image")
       return
     }
-    if (file.size > 5 * 1000000) {
-      setError("Sorry, max upload size is 5 MB")
+
+    if (file.size > 40 * 1000000) {
+      setError("Sorry, compression for files more than 40 MB in size is not allowed.")
       return;
     }
 
@@ -180,17 +182,18 @@ export default function UpdateProfile() {
 
 
     try {
-
+      const compressedFile = await resizeImage(file);
+      const contentType = compressedFile.type;
       const metaData = {
-        contentType: file.type,
+        contentType: contentType,
         customMetadata: {
           'originalFileName': file.name,
         }
       };
 
-      const fileExtension = file.type.substring(file.type.lastIndexOf('/') + 1)
+      const fileExtension = contentType.substring(contentType.lastIndexOf('/') + 1)
       const firebaseFilepath = 'profilePictures/' + currentUser.uid + '.' + fileExtension
-      const uploadTask = uploadFile(firebaseFilepath, file, metaData);
+      const uploadTask = uploadFile(firebaseFilepath, compressedFile, metaData);
 
       uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
         const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
