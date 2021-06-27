@@ -1,14 +1,16 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Header from '../Widgets/Header'
 import PostCard from '../Widgets/PostCard'
 import { Container, Table, ProgressBar, Form, Button, Alert, FormControl, InputGroup } from 'react-bootstrap'
 
 import firebase from "firebase/app"
+import { db } from "../firebase"
 import { useAuth } from "../contexts/AuthContext"
 
 export default function Grid() {
 
     const [uploadProgress, setUploadProgress] = useState(0)
+    const [posts, setPosts] = useState([])
     const [file, setFile] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -24,7 +26,7 @@ export default function Grid() {
 
     async function uploadNewPost_() {
 
-        if (!file || file.type.lastIndexOf('/')<0) {
+        if (!file || file.type.lastIndexOf('/') < 0) {
             setError("Please select a valid image")
             return
         }
@@ -32,17 +34,17 @@ export default function Grid() {
             setError("Sorry, max upload size is 5 MB")
             return;
         }
-        
+
         setLoading(true)
         setSuccess("")
         setError("")
         setUploadProgress(0);
-        
+
         try {
             const docRef = await getUserPostDocReference(currentUser.uid)
             const fileExtension = file.type.substring(file.type.lastIndexOf('/') + 1)
-            const firebaseFilepath = 'posts/' + currentUser.uid +'/'+ docRef.id + '.' + fileExtension
-            const uploadTask = uploadFile(firebaseFilepath, file, {contentType: file.type} );
+            const firebaseFilepath = 'posts/' + currentUser.uid + '/' + docRef.id + '.' + fileExtension
+            const uploadTask = uploadFile(firebaseFilepath, file, { contentType: file.type });
 
             uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
@@ -54,34 +56,65 @@ export default function Grid() {
 
             const newURL = await getDownloadURL(firebaseFilepath)
             const postData = {
-                'contentType': file.type,
-                'originalFileName': file.name,
-                'mediaURL': newURL,
-                'timestamp': firebase.firestore.FieldValue.serverTimestamp(),
-                'caption':captionRef.current.value,
-                'likes':0,
-                'comments':[]
+                contentType: file.type,
+                originalFileName: file.name,
+                mediaURL: newURL,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                caption: captionRef.current.value,
+                likes: 0,
+                comments: [],
+                authorName: currentUser.displayName,
             };
-            await updateNewPostData_(docRef,postData)
+
+            await updateNewPostData_(docRef, postData)
 
         } catch (err) {
             setError(err.message)
         } finally {
             setUploadProgress(0);
             setLoading(false)
-            captionRef.current.value=""
+            captionRef.current.value = ""
         }
     }
 
-    async function updateNewPostData_(docRef,postData) {
+    async function updateNewPostData_(docRef, postData) {
         try {
-            await updatePostData(currentUser.uid,docRef,postData)
+            await updatePostData(currentUser.uid, docRef, postData)
             setSuccess("Post added to your profile!")
         } catch (err) {
             setError(err.message)
         } finally {
         }
     }
+
+    useEffect(() => {
+
+        const unsubscribe = 
+
+            db
+            .collection('userData')
+            .doc(currentUser.uid.toString())
+            .collection('posts')
+            .orderBy("timestamp", "desc")
+            .onSnapshot(snapshot => {
+                
+                setPosts(snapshot.docs.map(doc => {
+                    const jsonData = {
+                        postMediaURL: doc.data().mediaURL,
+                        postCaption: doc.data().caption,
+                        docId: doc.id,
+                        timestamp: (doc.data().timestamp?doc.data().timestamp.toDate().toLocaleString('en-GB') : ""),
+                        authorName: doc.data().authorName,
+                    };
+                    return jsonData;
+                }))
+
+            },(err)=> {
+                setError(err.message)
+            });
+        return unsubscribe
+
+    }, []);
 
     return (
         <>
@@ -122,7 +155,7 @@ export default function Grid() {
                             <tr>
                                 <td>
                                     <Button disabled={loading} className="w-100" onClick={uploadNewPost_}>
-                                        Upload Picture
+                                        Add New Post
                                     </Button>
                                 </td>
                             </tr>
@@ -130,7 +163,24 @@ export default function Grid() {
                         </tbody>
                     </Table>
 
-                    <PostCard userName="6aryan" postCaption="sunny \n days boat" />
+                    {
+                        posts.map(post =>
+
+
+                            <PostCard
+                                userName={post.authorName}
+                                key={post.docId}
+                                postCaption={post.postCaption}
+                                postMediaURL={post.postMediaURL}
+                                timestamp={post.timestamp}
+                            />
+
+                        )
+                    }
+
+
+
+
 
                 </div>
             </Container>

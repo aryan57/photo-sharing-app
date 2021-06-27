@@ -90,7 +90,7 @@ export function AuthProvider({ children }) {
   function updatePostData(uid,docRef,postData) {
 
     // return docRef.set({postData}, {merge:true})
-    return db.collection("userData").doc(uid).collection("posts").doc(docRef.id).set({postData}, {merge:true})
+    return db.collection("userData").doc(uid).collection("posts").doc(docRef.id).set(postData, {merge:true})
   }
 
   useEffect(() => {
