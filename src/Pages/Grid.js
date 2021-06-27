@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react"
 import Header from '../Widgets/Header'
 import PostCard from '../Widgets/PostCard'
 import { Container, Table, ProgressBar, Form, Button, Alert, FormControl, InputGroup } from 'react-bootstrap'
+import Resizer from "react-image-file-resizer";
 
 import firebase from "firebase/app"
 import { db } from "../firebase"
@@ -24,14 +25,31 @@ export default function Grid() {
         getUserPostDocReference
     } = useAuth()
 
+    const resizeFile = (file) =>
+        new Promise((resolve) => {
+            Resizer.imageFileResizer(
+                file,
+                512,
+                512,
+                "PNG",
+                50, // quality -> 0 low quality, 100 high quality
+                0,
+                (uri) => {
+                    resolve(uri);
+                },
+                "file"
+            );
+        });
+
     async function uploadNewPost_() {
 
         if (!file || file.type.lastIndexOf('/') < 0) {
             setError("Please select a valid image")
             return
         }
-        if (file.size > 5 * 1000000) {
-            setError("Sorry, max upload size is 5 MB")
+
+        if (file.size > 40 * 1000000) {
+            setError("Sorry, compression for files more than 40 MB in size is not allowed.")
             return;
         }
 
@@ -41,10 +59,11 @@ export default function Grid() {
         setUploadProgress(0);
 
         try {
+            const compressedFile = await resizeFile(file);
             const docRef = await getUserPostDocReference(currentUser.uid)
-            const fileExtension = file.type.substring(file.type.lastIndexOf('/') + 1)
+            const fileExtension = compressedFile.type.substring(compressedFile.type.lastIndexOf('/') + 1)
             const firebaseFilepath = 'posts/' + currentUser.uid + '/' + docRef.id + '.' + fileExtension
-            const uploadTask = uploadFile(firebaseFilepath, file, { contentType: file.type });
+            const uploadTask = uploadFile(firebaseFilepath, compressedFile, { contentType: compressedFile.type });
 
             uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
@@ -89,29 +108,29 @@ export default function Grid() {
 
     useEffect(() => {
 
-        const unsubscribe = 
+        const unsubscribe =
 
             db
-            .collection('userData')
-            .doc(currentUser.uid.toString())
-            .collection('posts')
-            .orderBy("timestamp", "desc")
-            .onSnapshot(snapshot => {
-                
-                setPosts(snapshot.docs.map(doc => {
-                    const jsonData = {
-                        postMediaURL: doc.data().mediaURL,
-                        postCaption: doc.data().caption,
-                        docId: doc.id,
-                        timestamp: (doc.data().timestamp?doc.data().timestamp.toDate().toLocaleString('en-GB') : ""),
-                        authorName: doc.data().authorName,
-                    };
-                    return jsonData;
-                }))
+                .collection('userData')
+                .doc(currentUser.uid.toString())
+                .collection('posts')
+                .orderBy("timestamp", "desc")
+                .onSnapshot(snapshot => {
 
-            },(err)=> {
-                setError(err.message)
-            });
+                    setPosts(snapshot.docs.map(doc => {
+                        const jsonData = {
+                            postMediaURL: doc.data().mediaURL,
+                            postCaption: doc.data().caption,
+                            docId: doc.id,
+                            timestamp: (doc.data().timestamp ? doc.data().timestamp.toDate().toLocaleString('en-GB') : ""),
+                            authorName: doc.data().authorName,
+                        };
+                        return jsonData;
+                    }))
+
+                }, (err) => {
+                    setError(err.message)
+                });
         return unsubscribe
 
     }, []);
