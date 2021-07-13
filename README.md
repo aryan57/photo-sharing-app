@@ -1,4 +1,3 @@
-This will be a React implmentation of https://github.com/aryan57/FDSMS
 
 Authentication used from https://www.youtube.com/watch?v=PKwu15ldZ7k
 
