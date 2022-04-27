@@ -22,14 +22,14 @@ const PostCard = ({userName="", postMediaURL="", postCaption="", timestamp=""}) 
               <Card.Text>
                 {postCaption}
               </Card.Text>
-              <Button variant="primary">
+              {/* <Button variant="primary">
                 Like
                 <Badge style={{ marginLeft: "10px" }} variant="light">9</Badge>
               </Button>
               <Button variant="primary" style={{ marginLeft: "15px" }} >
                 See Comments
                 <Badge style={{ marginLeft: "10px" }}  variant="light">4</Badge>
-              </Button>
+              </Button> */}
             </Card.Body>
           </Card>
     )

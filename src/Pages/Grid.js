@@ -107,7 +107,9 @@ export default function Grid() {
                             postMediaURL: doc.data().mediaURL,
                             postCaption: doc.data().caption,
                             docId: doc.id,
-                            timestamp: (doc.data().timestamp ? doc.data().timestamp.toDate().toLocaleString('en-GB') : ""),
+                            timestamp: (doc.data().timestamp ? doc.data().timestamp.toDate().toLocaleString('en-GB', {
+                                day: 'numeric', month: 'short', year: 'numeric', hour12: true
+                              }).replace(/ /g, '-') : ""),
                             authorName: doc.data().authorName,
                         };
                         return jsonData;
