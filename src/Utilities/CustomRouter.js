@@ -17,7 +17,8 @@ function CustomRouter() {
           <AuthProvider>
             <Switch>
 
-              <PrivateRoute exact path="/" component={Dashboard} />
+              {/* <PrivateRoute exact path="/" component={Dashboard} /> */}
+              <PrivateRoute exact path="/" component={Grid} />
               <PrivateRoute path="/update-profile" component={UpdateProfile} />
               <PrivateRoute path="/profile" component={Profile} />
               <PrivateRoute path="/grid" component={Grid} />
