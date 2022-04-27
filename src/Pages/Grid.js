@@ -108,8 +108,8 @@ export default function Grid() {
                             postCaption: doc.data().caption,
                             docId: doc.id,
                             timestamp: (doc.data().timestamp ? doc.data().timestamp.toDate().toLocaleTimeString('en-GB', {
-                                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                              }).replace(/ /g, '-') : ""),
+                                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12 : true
+                              }) : ""),
                             authorName: doc.data().authorName,
                         };
                         return jsonData;
