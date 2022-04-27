@@ -7,7 +7,7 @@ const resizeImage = (file) =>
             512,
             512,
             "PNG",
-            50, // quality -> 0 low quality, 100 high quality
+            75, // quality -> 0 low quality, 100 high quality
             0,
             (uri) => {
                 resolve(uri);
